@@ -1,0 +1,55 @@
+#workspace div.myimagewrapper {
+	width: 600px;
+	height: 320px;
+	position: relative;
+	display: inline-block;
+	margin: 3px 10px 6px 5px;
+}
+
+#workspace div.myimagewrapper img.myimage {
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#workspace div.myimagewrapper button {
+	z-index: 5;
+	position: relative;
+	display: block;
+	visibility: hidden;
+	width: 300px;
+	padding: 1rem;
+	margin: 30px auto;
+	border-radius: 0.25rem;
+	border: 1px solid #d8dde6;
+	color: #d8dde6;
+	background-color: #fff;
+	font-size: 0.8rem;
+}
+
+#workspace div.myimagewrapper:hover button {
+	visibility: inherit;
+}
+
+#workspace div.myimagewrapper button {
+	color: #d8dde6;
+}
+
+#workspace div.myimagewrapper button.image {
+	color: #0070d2;
+}
+
+#workspace div.myimagewrapper button.enabled {
+	color: #0070d2;
+}
+
+#workspace div.myimagewrapper button.existing {
+	color: #d8dde6;
+	background-color: #dfd;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAflBMVEUQexD///8RexERhBEQfRADdAOJvokRghFFmEUQfxDN5M0Jdwnw9/D19vUjhSPp6+kfhB+muqa72bs4izjG4Mbp8+lUl1Run27U2tR7pHtHkEeQrZAbhhsqjCqdtp2QwpCywrJtn211onXN1c1nnme7yLvd7N1lqmWp0KlPnU/vaxTcAAAAxklEQVQYlVXQ2xaCIBAF0ANihJNIWZYmZvf6/x8Mprw0D6zFBgY4EFz3mwd8tc55hjhcK2MQSpmyH7BrmWKZ5PLFLlGYKjlHvLZzC9oFrMwERCSVL3CfWfp+WYI+4hZQErEtV+KZwjTw0awjybaIqw4ydLKPLYgtndrbTGxobjYed5nY7kZzqNRPR1Ml1vFJ4arsNJzVNfJSscrxivYA0Sd/vwwbYyCXP9VNztHtZzHppviF3HnNrHRb50Pyojg2VsKV9YGnH2iKCdqYoemjAAAAAElFTkSuQmCC") white no-repeat left 7px top 13px;
+}
