@@ -175,7 +175,7 @@ module.exports = function () {
 				self.blocks[id].disabled = true;
 				if (!self.templates[id].hasAttribute('class')) {
 					self.templates[id].className = 'enabled';					
-					self.templates[id].disabled = false;
+					self.templates[id].removeAttribute('disabled');
 				}
 			} else {
 				id = name;
@@ -183,7 +183,7 @@ module.exports = function () {
 				self.images[id].disabled = true;
 				if (!self.blocks[id].hasAttribute('class')) {
 					self.blocks[id].className = 'enabled';					
-					self.blocks[id].disabled = false;
+					self.blocks[id].removeAttribute('disabled');
 				}
 			}
 		}
