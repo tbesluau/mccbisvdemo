@@ -45,13 +45,7 @@ module.exports = function () {
 	// which asset cannot be created yet because its
 	// requirements are not met
 	this.markButtons = function () {
-		var item, name, id;
-		for (var blck in self.blocks) {
-			self.blocks[blck].disabled = true;
-		}
-		for (var tmpl in self.templates) {
-			self.templates[tmpl].disabled = true;
-		}
+		var item, name, id, block, template;
 		for (var i = 0; i < self.contents.length; i++) {
 			item = self.contents[i];
 			name = item.name;
@@ -65,7 +59,7 @@ module.exports = function () {
 				self.blocks[id].disabled = true;
 				if (!self.templates[id].hasAttribute('class')) {
 					self.templates[id].className = 'enabled';					
-					self.templates[id].removeAttribute('disabled');
+					self.templates[id].disabled = false;
 				}
 			} else {
 				id = name;
@@ -73,8 +67,24 @@ module.exports = function () {
 				self.images[id].disabled = true;
 				if (!self.blocks[id].hasAttribute('class')) {
 					self.blocks[id].className = 'enabled';					
-					self.blocks[id].removeAttribute('disabled');
+					self.blocks[id].disabled = false;
 				}
+			}
+		}
+		for (var blck in self.blocks) {
+			block = self.blocks[blck];
+			if (block.className === 'enabled') {
+				block.disabled = false;
+			} else {
+				block.disabled = true;
+			}
+		}
+		for (var tmpl in self.templates) {
+			template = self.templates[tmpl];
+			if (template.className === 'enabled') {
+				template.disabled = false;
+			} else {
+				template.disabled = true;
 			}
 		}
 	};
