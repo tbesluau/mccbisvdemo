@@ -7,6 +7,10 @@ module.exports = function () {
 	this.images = {};
 	this.blocks = {};
 	this.templates = {};
+
+	// the function below can take an image URL and load it
+	// as a file so we can extract base64 encoded data
+	// from our own non-CB images and add them to CB
 	this.toDataURL = function (url, callback) {
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function() {
@@ -21,6 +25,9 @@ module.exports = function () {
 		xhr.send();
 	};
 
+	// this is unelegant: we're getting the assets
+	// each time something changes to repaint the
+	// action buttons
 	this.checkStatus = function () {
 		if (self.checking) {
 			return;
@@ -33,6 +40,10 @@ module.exports = function () {
 		});
 	};
 
+	// this styles the buttons so it's clear
+	// which asset has already been created and
+	// which asset cannot be created yet because its
+	// requirements are not met
 	this.markButtons = function () {
 		var item, name, id;
 		for (var blck in self.blocks) {
@@ -68,6 +79,8 @@ module.exports = function () {
 		}
 	};
 
+	// find an asset in the existing assets list
+	// under our demo folder
 	this.getExisting = function (name) {
 		if (!this.contents) {
 			return;
@@ -78,6 +91,8 @@ module.exports = function () {
 		return results.length > 0 && results[0] || null;
 	};
 
+	// this creates the image UI and adds
+	// listeners to the various creation buttons
 	this.add = function (imageId) {
 		var div = document.getElementById(imageId);
 		var img = document.querySelector('#' + imageId + ' .myimage');

@@ -70,18 +70,23 @@
 var Imager = __webpack_require__(1);
 __webpack_require__(3);
 
+// in the demo we're simply showing 4
+// statically hosted images
 var images = [
 	'/img/myimage01.png',
 	'/img/myimage02.png',
 	'/img/myimage03.png',
 	'/img/myimage04.jpg'
-]
+];
 
 
 var workspace = document.createElement('DIV');
 workspace.id = 'workspace';
 document.body.appendChild(workspace);
 
+// creating the 4 images and sending them to
+// our "imager" logic that will create and listen
+// to the various asset creation buttons
 var imager = new Imager();
 var image, imageWrapper;
 for (var i = 0; i < images.length; i++) {
@@ -95,19 +100,8 @@ for (var i = 0; i < images.length; i++) {
 	workspace.appendChild(imageWrapper);
 	imager.add(imageWrapper.id);
 }
+
 imager.checkStatus();
-
-
-/*setTimeout(function () {
-	api.get('asset/v1/content/assets/140442', function (response) {
-		console.log(response);
-	});
-}, 2000);
-setTimeout(function () {
-	api.get('asset/v1/assettypes', function (response) {
-		console.log(response);
-	});
-}, 4000);*/
 
 
 /***/ }),
@@ -123,6 +117,10 @@ module.exports = function () {
 	this.images = {};
 	this.blocks = {};
 	this.templates = {};
+
+	// the function below can take an image URL and load it
+	// as a file so we can extract base64 encoded data
+	// from our own non-CB images and add them to CB
 	this.toDataURL = function (url, callback) {
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function() {
@@ -137,6 +135,9 @@ module.exports = function () {
 		xhr.send();
 	};
 
+	// this is unelegant: we're getting the assets
+	// each time something changes to repaint the
+	// action buttons
 	this.checkStatus = function () {
 		if (self.checking) {
 			return;
@@ -149,6 +150,10 @@ module.exports = function () {
 		});
 	};
 
+	// this styles the buttons so it's clear
+	// which asset has already been created and
+	// which asset cannot be created yet because its
+	// requirements are not met
 	this.markButtons = function () {
 		var item, name, id;
 		for (var blck in self.blocks) {
@@ -184,6 +189,8 @@ module.exports = function () {
 		}
 	};
 
+	// find an asset in the existing assets list
+	// under our demo folder
 	this.getExisting = function (name) {
 		if (!this.contents) {
 			return;
@@ -194,6 +201,8 @@ module.exports = function () {
 		return results.length > 0 && results[0] || null;
 	};
 
+	// this creates the image UI and adds
+	// listeners to the various creation buttons
 	this.add = function (imageId) {
 		var div = document.getElementById(imageId);
 		var img = document.querySelector('#' + imageId + ' .myimage');
@@ -240,30 +249,25 @@ module.exports = function () {
 /***/ (function(module, exports) {
 
 module.exports = function () {
+	
 	var self = this;
+
+	// the UI needs to send API calls to the node proxy
+	// the node proxy is identified by the prefix below
+	// and will pass it through to the MC API
 	this.endpoint = '/proxy/';
+	
+	// hardcoded category ID for this demo
 	this.category = 1975383;
 
+	// all calls will use this base set of headers
 	this.headers = {
 		'Accept': 'application/json',
 		'Content-Type': 'application/json',
 		'Cache': 'no-cache'
 	};
 
-	/*fetch('/refresh', {
-		method: 'GET',
-		headers: self.headers,
-		credentials: 'include',
-		mode: 'cors'
-	}).then(function (response) {
-		return response.json();
-	}).then(function (body) {
-		self.token = body.accessToken;
-		self.endpoint = body.endpoint;
-		self.headers.Authorization = 'Bearer' + self.token;
-	});*/
-	
-
+	// simple API get call with callback
 	this._get = function (url, cb) {
 		fetch(self.endpoint + url, {
 			method: 'GET',
@@ -275,6 +279,7 @@ module.exports = function () {
 		});
 	};
 
+	// simple API post with callback
 	this._post = function (url, data, cb) {
 		fetch(self.endpoint + url, {
 			method: 'POST',
@@ -289,6 +294,7 @@ module.exports = function () {
 		});
 	};
 
+	// list all assets under a given folder
 	this.getFolderContents = function (cb) {
 		this._post('asset/v1/content/assets/query', {
 			query: {
@@ -299,14 +305,18 @@ module.exports = function () {
 		}, cb);
 	};
 
+	// generates an image creation payload
+	// all we need is a name and the image file base64 encoded
+	// as well as the assetType or extension
 	this.addImage = function (name, base64File, ext, cb) {
+		// figure out assetType based on the file extension
 		var typeID = ext === 'png' && 28 || ext === 'jpg' && 23 || 0;
 		if (!typeID) {
 			return;
 		}
 		this._post('asset/v1/content/assets', {
 			assetType: {
-				id: 28
+				id: typeID
 			},
 			category: {
 				id: self.category
@@ -315,6 +325,10 @@ module.exports = function () {
 			file: base64File
 		}, cb);
 	};
+
+	// generates a block creation payload based on an image
+	// we make an imageblock, and get the URL to display
+	// from the image asset passed to the function
 	this.addBlock = function (name, img, cb) {
 		this._post('asset/v1/content/assets', {
 			assetType: {
@@ -324,9 +338,13 @@ module.exports = function () {
 				id: self.category
 			},
 			name: name,
+			// the src in the content below is the published URL of the image asset
 			content: '<img src="' + img.fileProperties.publishedURL + '" />'
 		}, cb);
 	};
+
+	// generates a template creation payload based on a block
+	// we create a slot with the block in it
 	this.addTemplate = function (name, block, cb) {
 		this._post('asset/v1/content/assets', {
 			assetType: {
@@ -336,6 +354,8 @@ module.exports = function () {
 				id: self.category
 			},
 			name: name,
+			// very minimalistic body for demo purposes
+			// needs a head, header, and footer at least
 			content: '<html><body><div><div data-type="slot" data-key="myslot"></div></div></html>',
 			slots: {
 				myslot: {
